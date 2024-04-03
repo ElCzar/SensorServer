@@ -1,17 +1,19 @@
 package com.forest.server;
 
+import org.zeromq.SocketType;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
-public abstract class Sensor extends Thread{
+public abstract class Sensor implements Runnable{
     protected int SENSOR_COUNT;
     protected Double probabilityCorrect;
     protected Double probabilityOutOfRange;
     protected Double probabilityError;
     protected ZMQ.Socket socket;
+    protected static final String address = "tcp://localhost:5555";
 
 
-    public Sensor(ZMQ.Socket socket, Double probabilityCorrect, Double probabilityOutOfRange, Double probabilityError) {
-        this.socket = socket;
+    public Sensor(Double probabilityCorrect, Double probabilityOutOfRange, Double probabilityError) {
         this.probabilityCorrect = probabilityCorrect;
         this.probabilityOutOfRange = probabilityOutOfRange;
         this.probabilityError = probabilityError;
@@ -19,14 +21,30 @@ public abstract class Sensor extends Thread{
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            System.out.println("Sensor reading...");
+        try(ZContext context = new ZContext(1)) {
+            socket = context.createSocket(SocketType.PUSH);
+            socket.connect(address);
+
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(SENSOR_COUNT);
+                    double reading = generateReading();
+
+                    messageForProxy(reading);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(STR."Error creating socket: \{e.getMessage()}");
+            System.exit(1);
         }
     }
 
     public abstract Double generateReading();
 
-    public abstract void messageForProxy();
+    public abstract void messageForProxy(Double data);
 
     public Double getProbabilityCorrect() {
         return probabilityCorrect;

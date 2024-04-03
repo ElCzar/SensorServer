@@ -8,34 +8,35 @@ import org.zeromq.ZMQ;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TemperatureSensorTest {
-    private TemperatureSensor temperatureSensor;
+class HumiditySensorTest {
+
+    private HumiditySensor humiditySensor;
 
     @BeforeEach
     void setUp() {
-        Double probabilityOutOfRange = 0.0;
-        Double probabilityError = 0.0;
-        Double probabilityCorrect = 0.0;
+        double probabilityCorrect = 0.0;
+        double probabilityOutOfRange = 0.0;
+        double probabilityError = 0.0;
 
-        temperatureSensor = new TemperatureSensor(probabilityCorrect, probabilityOutOfRange, probabilityError);
+        humiditySensor = new HumiditySensor(probabilityCorrect, probabilityOutOfRange, probabilityError);
     }
 
     @Test
     void generateReadingCorrect() {
         Double probabilityCorrect = 1.0;
 
-        temperatureSensor.setProbabilityCorrect(probabilityCorrect);
+        humiditySensor.setProbabilityCorrect(probabilityCorrect);
 
         // Assert 10000 readings are generated within the correct range
         for (int i = 0; i < 10000; i++) {
-            Double reading = temperatureSensor.generateReading();
+            Double reading = humiditySensor.generateReading();
 
             // Print out-of-range readings
-            if (reading < 11.0 || reading >= 29.5) {
+            if (reading < 70.0 || reading > 100.0 ) {
                 System.out.println(reading);
             }
 
-            assertTrue(reading >= 11.0 && reading < 29.5);
+            assertTrue(reading >= 70.0 && reading <= 100.0);
         }
     }
 
@@ -43,18 +44,18 @@ class TemperatureSensorTest {
     void generateReadingOutOfRange() {
         Double probabilityOutOfRange = 1.0;
 
-        temperatureSensor.setProbabilityOutOfRange(probabilityOutOfRange);
+        humiditySensor.setProbabilityOutOfRange(probabilityOutOfRange);
 
         // Assert 10000 readings are generated within the out-of-range
         for (int i = 0; i < 10000; i++) {
-            Double reading = temperatureSensor.generateReading();
+            Double reading = humiditySensor.generateReading();
 
             // Print correct readings
-            if ((reading >= 11.0 && reading <= 29.4) || reading < 1.0 || reading > 50.0) {
+            if ((reading >= 70.0 && reading <= 100.0) || reading < 1.0) {
                 System.out.println(reading);
             }
 
-            assertTrue((reading < 11.0 || reading >= 29.5) && reading >= 1.0 && reading <= 50.0);
+            assertTrue(reading >= 1.0 && reading < 70.0);
         }
     }
 
@@ -62,18 +63,18 @@ class TemperatureSensorTest {
     void generateReadingError() {
         Double probabilityError = 1.0;
 
-        temperatureSensor.setProbabilityError(probabilityError);
+        humiditySensor.setProbabilityError(probabilityError);
 
         // Assert 10000 readings are generated with an error
         for (int i = 0; i < 10000; i++) {
-            Double reading = temperatureSensor.generateReading();
+            Double reading = humiditySensor.generateReading();
 
             // Print correct readings
-            if (reading > -1.0 || reading < -50.0) {
+            if (reading > -1.0 || reading < -100.0) {
                 System.out.println(reading);
             }
 
-            assertTrue(reading >= -50.0 && reading <= -1.0);
+            assertTrue(reading >= -100.0 && reading <= -1.0);
         }
     }
 
@@ -81,18 +82,18 @@ class TemperatureSensorTest {
     void generateMessageForProxy() throws InterruptedException {
         // Arrange
         double probabilityCorrect = 1.0;
-        temperatureSensor.setProbabilityCorrect(probabilityCorrect);
+        humiditySensor.setProbabilityCorrect(probabilityCorrect);
 
         // Act
         try (ZContext context = new ZContext()) {
             ZMQ.Socket socket = context.createSocket(SocketType.PUSH);
             socket.connect("tcp://localhost:5555");
-            temperatureSensor.setSocket(socket);
+            humiditySensor.setSocket(socket);
 
             for (int i = 0; i < 5; i++) {
                 Thread.sleep(1000);
-                double reading = temperatureSensor.generateReading();
-                temperatureSensor.messageForProxy(reading);
+                double reading = humiditySensor.generateReading();
+                humiditySensor.messageForProxy(reading);
             }
         } catch (Exception e) {
             fail(STR."Exception thrown: \{e.getMessage()}");
@@ -104,15 +105,15 @@ class TemperatureSensorTest {
     void threadRun() throws InterruptedException {
         // Arrange
         double probabilityCorrect = 1.0;
-        temperatureSensor.setProbabilityCorrect(probabilityCorrect);
+        humiditySensor.setProbabilityCorrect(probabilityCorrect);
 
         // Act
         try (ZContext context = new ZContext()) {
             ZMQ.Socket socket = context.createSocket(SocketType.PUSH);
             socket.connect("tcp://localhost:5555");
-            temperatureSensor.setSocket(socket);
+            humiditySensor.setSocket(socket);
 
-            temperatureSensor.run();
+            humiditySensor.run();
             Thread.sleep(6500);
         } catch (Exception e) {
             fail(STR."Exception thrown: \{e.getMessage()}");

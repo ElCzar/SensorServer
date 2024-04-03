@@ -23,7 +23,6 @@ public class SensorServer {
         System.out.println(STR."Type: \{type}");
         System.out.println(STR."File: \{file}");
 
-        // Create a new sensor server
         SensorInitiator sensorInitiator = new SensorInitiator();
         sensorInitiator.initiateSensors(type, file);
     }

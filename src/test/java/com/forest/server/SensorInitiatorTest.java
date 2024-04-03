@@ -2,6 +2,9 @@ package com.forest.server;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.zeromq.SocketType;
+import org.zeromq.ZContext;
+import org.zeromq.ZMQ;
 
 import java.util.List;
 
@@ -16,6 +19,21 @@ class SensorInitiatorTest {
         sensorInitiator = new SensorInitiator();
     }
 
+    @Test
+    void correctInitiateSensors() {
+        // Arrange
+        try (ZContext context = new ZContext()) {
+            ZMQ.Socket socket = context.createSocket(SocketType.PUSH);
+            socket.connect("tcp://localhost:5555");
+            String file = "src/test/resources/testDataArranged.txt";
+            String type = SensorServer.TEMPERATURE;
+
+            // Act & Assert
+            assertDoesNotThrow(() -> sensorInitiator.initiateSensors(type, file));
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
 
     @Test
     void readDataFromFileArranged() {

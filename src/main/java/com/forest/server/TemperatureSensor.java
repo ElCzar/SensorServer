@@ -1,30 +1,25 @@
 package com.forest.server;
 
+import org.zeromq.SocketType;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 import java.util.List;
 import java.util.Random;
 
-public class TemperatureSensor extends Sensor {
+public class TemperatureSensor extends Sensor implements Runnable{
     private static final List<Double> temperatureRange = List.of(11.0, 29.4);
     private static final Double minTemperature = 1.0;
     private static final Double maxTemperature = 50.0;
 
-    public TemperatureSensor(ZMQ.Socket socket, Double probabilityCorrect, Double probabilityOutOfRange, Double probabilityError) {
-        super(socket, probabilityCorrect, probabilityOutOfRange, probabilityError);
-        SENSOR_COUNT = 6000; // Milliseconds to seconds
+    public TemperatureSensor(Double probabilityCorrect, Double probabilityOutOfRange, Double probabilityError) {
+        super(probabilityCorrect, probabilityOutOfRange, probabilityError);
+        this.SENSOR_COUNT = 6000; // Milliseconds to seconds
     }
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            try {
-                Thread.sleep(SENSOR_COUNT);
-                messageForProxy();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+        super.run();
     }
 
     @Override
@@ -53,8 +48,8 @@ public class TemperatureSensor extends Sensor {
     }
 
     @Override
-    public void messageForProxy() {
+    public void messageForProxy(Double data) {
         // Send a message to the proxy
-        socket.send(STR."\{SensorServer.TEMPERATURE} \{generateReading()}");
+        socket.send(STR."\{SensorServer.TEMPERATURE} \{data}");
     }
 }
