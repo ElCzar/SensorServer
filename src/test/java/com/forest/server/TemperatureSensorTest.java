@@ -2,6 +2,9 @@ package com.forest.server;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.zeromq.SocketType;
+import org.zeromq.ZContext;
+import org.zeromq.ZMQ;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -71,6 +74,47 @@ class TemperatureSensorTest {
             }
 
             assertTrue(reading >= -50.0 && reading <= -1.0);
+        }
+    }
+
+    @Test
+    void generateMessageForProxy() throws InterruptedException {
+        // Arrange
+        double probabilityCorrect = 1.0;
+        temperatureSensor.setProbabilityCorrect(probabilityCorrect);
+
+        // Act
+        try (ZContext context = new ZContext()) {
+            ZMQ.Socket socket = context.createSocket(SocketType.PUSH);
+            socket.connect("tcp://localhost:5555");
+            temperatureSensor.setSocket(socket);
+
+            for (int i = 0; i < 5; i++) {
+                Thread.sleep(1000);
+                temperatureSensor.messageForProxy();
+            }
+        } catch (Exception e) {
+            fail("Exception thrown: " + e.getMessage());
+        }
+
+    }
+
+    @Test
+    void threadRun() throws InterruptedException {
+        // Arrange
+        double probabilityCorrect = 1.0;
+        temperatureSensor.setProbabilityCorrect(probabilityCorrect);
+
+        // Act
+        try (ZContext context = new ZContext()) {
+            ZMQ.Socket socket = context.createSocket(SocketType.PUSH);
+            socket.connect("tcp://localhost:5555");
+            temperatureSensor.setSocket(socket);
+
+            temperatureSensor.start();
+            Thread.sleep(6500);
+        } catch (Exception e) {
+            fail("Exception thrown: " + e.getMessage());
         }
     }
 }

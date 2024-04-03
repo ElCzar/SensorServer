@@ -16,6 +16,18 @@ public class TemperatureSensor extends Sensor {
     }
 
     @Override
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
+            try {
+                Thread.sleep(SENSOR_COUNT);
+                messageForProxy();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    @Override
     public Double generateReading() {
         // Generate a temperature reading
         double probability = new Random().nextDouble();

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class SensorInitiator {
     public static final int SENSOR_COUNT = 10;
-    public static final String address = "tcp://localhost:5555";
+    private static final String address = "tcp://localhost:5555";
 
     public void initiateSensors(String type, String file) {
         try (ZContext context = new ZContext()) {
