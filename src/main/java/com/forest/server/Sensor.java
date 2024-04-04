@@ -10,7 +10,7 @@ public abstract class Sensor implements Runnable{
     protected Double probabilityOutOfRange;
     protected Double probabilityError;
     protected ZMQ.Socket socket;
-    protected static final String address = "tcp://localhost:5555";
+    protected static final String address = "tcp://10.43.100.44:5555";
 
 
     public Sensor(Double probabilityCorrect, Double probabilityOutOfRange, Double probabilityError) {
