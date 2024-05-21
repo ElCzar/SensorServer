@@ -54,7 +54,7 @@ public class FogSensor extends Sensor implements Runnable{
 
     @Override
     public void messageForProxy(Double data) {
-        System.out.println(STR."\{SensorServer.FOG} \{data}");
+       socket.send(STR."\{SensorServer.FOG} \{data}");
     }
 
     public void generateWarning() {
