@@ -1,5 +1,7 @@
 package com.forest.server;
 
+import com.forest.server.sensors.SensorInitiator;
+import com.forest.server.sensors.SensorServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;

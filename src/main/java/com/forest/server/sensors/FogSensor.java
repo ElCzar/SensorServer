@@ -1,8 +1,7 @@
-package com.forest.server;
+package com.forest.server.sensors;
 
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
 
 import java.util.Random;
 

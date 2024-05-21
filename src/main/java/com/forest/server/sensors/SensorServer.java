@@ -1,4 +1,4 @@
-package com.forest.server;
+package com.forest.server.sensors;
 
 public class SensorServer {
     public static final String TEMPERATURE = "Temperature";

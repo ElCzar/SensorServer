@@ -1,5 +1,6 @@
 package com.forest.server;
 
+import com.forest.server.sensors.HumiditySensor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;

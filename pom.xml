@@ -53,7 +53,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        com.forest.server.SensorServer
+                                        com.forest.server.sensors.SensorServer
                                     </mainClass>
                                 </manifest>
                             </archive>

@@ -1,14 +1,9 @@
-package com.forest.server;
-
-import org.zeromq.SocketType;
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
+package com.forest.server.sensors;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 public class SensorInitiator {
     public static final int SENSOR_COUNT = 10;

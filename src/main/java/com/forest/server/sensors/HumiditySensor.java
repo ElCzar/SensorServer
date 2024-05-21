@@ -1,6 +1,4 @@
-package com.forest.server;
-
-import org.zeromq.ZMQ;
+package com.forest.server.sensors;
 
 import java.util.List;
 import java.util.Random;
