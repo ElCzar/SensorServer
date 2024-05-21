@@ -1,5 +1,7 @@
 package com.forest.server.sensors;
 
+import com.forest.server.SystemData;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -17,9 +19,9 @@ public class SensorInitiator {
 
             for (int i = 0; i < SENSOR_COUNT; i++) {
                 switch (type) {
-                    case SensorServer.TEMPERATURE -> new Thread(new TemperatureSensor(probabilityCorrect, probabilityOutOfRange, probabilityError)).start();
-                    case SensorServer.HUMIDITY -> new Thread(new HumiditySensor(probabilityCorrect, probabilityOutOfRange, probabilityError)).start();
-                    case SensorServer.FOG -> new Thread(new FogSensor(probabilityCorrect, probabilityOutOfRange, probabilityError)).start();
+                    case SystemData.TEMPERATURE -> new Thread(new TemperatureSensor(probabilityCorrect, probabilityOutOfRange, probabilityError)).start();
+                    case SystemData.HUMIDITY -> new Thread(new HumiditySensor(probabilityCorrect, probabilityOutOfRange, probabilityError)).start();
+                    case SystemData.FOG -> new Thread(new FogSensor(probabilityCorrect, probabilityOutOfRange, probabilityError)).start();
                     default -> throw new IllegalArgumentException("Invalid sensor type");
                 };
             }

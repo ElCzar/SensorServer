@@ -28,7 +28,7 @@ class SensorInitiatorTest {
             ZMQ.Socket socket = context.createSocket(SocketType.PUSH);
             socket.connect("tcp://localhost:5555");
             String file = "src/test/resources/testDataArranged.txt";
-            String type = SensorServer.TEMPERATURE;
+            String type = SystemData.TEMPERATURE;
 
             // Act & Assert
             assertDoesNotThrow(() -> sensorInitiator.initiateSensors(type, file));

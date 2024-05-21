@@ -1,5 +1,7 @@
 package com.forest.server.sensors;
 
+import com.forest.server.SystemData;
+
 import java.util.List;
 import java.util.Random;
 
@@ -40,6 +42,6 @@ public class HumiditySensor extends Sensor implements Runnable{
     @Override
     public void messageForProxy(Double data) {
         // Send a message to the proxy
-        socket.send(STR."\{SensorServer.HUMIDITY} \{data}");
+        socket.send(STR."\{SystemData.HUMIDITY} \{data}");
     }
 }

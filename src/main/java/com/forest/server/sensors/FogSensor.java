@@ -1,5 +1,6 @@
 package com.forest.server.sensors;
 
+import com.forest.server.SystemData;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 
@@ -53,11 +54,11 @@ public class FogSensor extends Sensor implements Runnable{
 
     @Override
     public void messageForProxy(Double data) {
-       socket.send(STR."\{SensorServer.FOG} \{data}");
+       socket.send(STR."\{SystemData.FOG} \{data}");
     }
 
     public void generateWarning() {
         System.out.println(STR."Warning: Fog detected!");
-        // TODO send warning to proxy and quality control system
+        // TODO send warning to proxy, quality control system and signal to aspersor
     }
 }

@@ -1,14 +1,11 @@
 package com.forest.server.sensors;
 
-public class SensorServer {
-    public static final String TEMPERATURE = "Temperature";
-    public static final String HUMIDITY = "Humidity";
-    public static final String FOG = "Fog";
+import static com.forest.server.SystemData.*;
 
+public class SensorServer {
     public static void main(String[] args) {
         if (args.length != 2) {
             System.out.println("Usage: java SensorServer <type> <file>");
-            ProxyServer.main(args);
             System.exit(1);
         }
 
