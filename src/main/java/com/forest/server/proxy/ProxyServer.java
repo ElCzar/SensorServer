@@ -35,14 +35,13 @@ public class ProxyServer {
                         calculatorProxy.receiveHumidity(reading);
                         break;
                     case SystemData.FOG:
-                        receiveFog(reading);
+                        calculatorProxy.receiveFog(reading);
                         break;
                     case SystemData.WARNING:
-                        sendWarningToQualityControl(message);
-                        sendWarningToCloud(message);
+                        calculatorProxy.warningDetected(message);
                         break;
                     default:
-                        System.out.println(STR."Unknown sensor type: \{sensorType}");
+                        System.out.println(STR."Unknown information type: \{sensorType}");
                         break;
                 }
             }
@@ -50,21 +49,5 @@ public class ProxyServer {
             Thread.currentThread().interrupt();
             System.out.println(STR."Error: \{e.getMessage()}");
         }
-    }
-
-    private static void receiveFog(double fog) {
-        System.out.println(STR."Received fog: \{fog}"); // Imprimir cada lectura de niebla
-    }
-
-    private static void sendWarningToQualityControl(String message) {
-        // Implementa este método para enviar una alerta al sistema de control de calidad
-    }
-
-    private static void sendWarningToCloud(String message) {
-        // Implementa este método para enviar un SMS, correo, etc. a la nube
-    }
-
-    private static void sendHumidityToCloud(double humidity) {
-        // Implementa este método para enviar la humedad promedio a la capa cloud
     }
 }

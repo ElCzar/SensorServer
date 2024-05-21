@@ -13,15 +13,12 @@ import java.util.concurrent.Executors;
 
 public class CalculatorProxy {
     private final ExecutorService executorService;
-    private final String cloudAddress = "tcp://*:5555";
+    private final String cloudAddress = "tcp://localhost:5556";
     private static final ArrayList<Double> temperatureReadings = new ArrayList<>();
     private static final ArrayList<Double> humidityReadings = new ArrayList<>();
 
     private static final Double minTemperature = 11.0;
     private static final Double maxTemperature = 29.4;
-
-    private static final Double minHumidity = 70.0;
-    private static final Double maxHumidity = 100.0;
 
     public CalculatorProxy() {
         this.executorService = Executors.newCachedThreadPool();
@@ -42,6 +39,13 @@ public class CalculatorProxy {
             if (temperatureReadings.size() == SystemData.SENSOR_COUNT) {
                 double promedio = temperatureReadings.stream().filter(a -> a>0).mapToDouble(Double::doubleValue).average().orElse(0);
                 System.out.println(STR."Promedio temperatura \{LocalDate.now()}: \{promedio}");
+                // Send average to cloud
+                sendMessageToCloud(STR."\{SystemData.AVERAGE} \{SystemData.TEMPERATURE} \{promedio}");
+
+                // If the average temperature is out of range, detect a warning
+                if (promedio < minTemperature || promedio > maxTemperature) {
+                    warningDetected(STR."\{SystemData.WARNING} \{SystemData.TEMPERATURE} \{promedio}");
+                }
             }
         });
     }
@@ -53,6 +57,10 @@ public class CalculatorProxy {
             }
             humidityReadings.add(humidity);
 
+            if (humidity > 0) {
+                sendMessageToCloud(STR."\{SystemData.MEASUREMENT} \{SystemData.HUMIDITY} \{humidity}");
+            }
+
             if (humidityReadings.size() == SystemData.SENSOR_COUNT) {
                 double promedio = humidityReadings.stream().filter(a -> a>0).mapToDouble(Double::doubleValue).average().orElse(0);
                 System.out.println(STR."Promedio humedad \{LocalDate.now()}: \{promedio}");
@@ -62,7 +70,9 @@ public class CalculatorProxy {
 
     public void receiveFog(double fog) {
         executorService.submit(() -> {
-            System.out.println(STR."Received fog: \{fog}");
+            if (fog > 0) {
+                sendMessageToCloud(STR."\{SystemData.MEASUREMENT} \{SystemData.FOG} \{fog}");
+            }
         });
     }
 
@@ -82,12 +92,15 @@ public class CalculatorProxy {
                 socket.send(message);
 
                 byte[] reply = socket.recv(0);
-                System.out.println(STR."Received: [\{new String(reply, ZMQ.CHARSET)}]");
+                System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
             }
         });
     }
 
     private void sendWarningToQualityControl(String message) {
         // TODO Implementa este método para enviar una alerta al sistema de control de calidad - REQUEST-REPLY
+        executorService.submit(() -> {
+            System.out.println(STR."Sending warning to quality control: \{message}");
+        });
     }
 }
