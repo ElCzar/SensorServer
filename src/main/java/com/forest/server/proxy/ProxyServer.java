@@ -1,9 +1,12 @@
 package com.forest.server.proxy;
 
 import com.forest.server.SystemData;
+import io.micrometer.core.instrument.Timer;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+
+import java.util.concurrent.TimeUnit;
 
 public class ProxyServer {
 
@@ -21,13 +24,23 @@ public class ProxyServer {
 
             while (!Thread.currentThread().isInterrupted()) {
                 byte[] reply = socket.recv(0);
+                // Detects a message arrived
+                long endTime = System.currentTimeMillis();
+
+                // Gets message
+                String message = new String(reply, ZMQ.CHARSET);
+                String[] parts = message.split(" ");
+
                 // Increment metric counter
                 MetricsProxy.prometheusRegistry.counter("received_requests").increment();
+                // Set timer for receive time
+                Timer timer = Timer.builder("proxy_response_time")
+                        .description("Time taken to get the push from the sensor")
+                        .register(MetricsProxy.prometheusRegistry);
+                timer.record(endTime - Long.parseLong(parts[3]), TimeUnit.MILLISECONDS);
 
-                String message = new String(reply, ZMQ.CHARSET);
                 System.out.println(STR."Received: [\{message}]");
 
-                String[] parts = message.split(" ");
                 String solicitudeType = parts[0];
                 double reading = 0;
                 String time = "";

@@ -22,7 +22,7 @@ public class CloudServer {
             while (!Thread.currentThread().isInterrupted()) {
                 byte[] reply = socket.recv(0);
                 // Increment metric counter
-                MetricsProxy.prometheusRegistry.counter("received_requests").increment();
+                MetricsCloud.prometheusRegistry.counter("received_requests").increment();
 
                 String message = new String(reply, ZMQ.CHARSET);
                 System.out.println("Received: [" + message + "]");

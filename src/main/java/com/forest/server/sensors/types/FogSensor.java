@@ -68,7 +68,7 @@ public class FogSensor extends Sensor implements Runnable{
 
     @Override
     public void messageForProxy(Double data) {
-       getSocket().send(STR."\{SystemData.FOG} \{data} \{LocalDateTime.now()}");
+       getSocket().send(STR."\{SystemData.FOG} \{data} \{LocalDateTime.now()} \{System.currentTimeMillis()}");
        MetricsSensors.prometheusRegistry.counter("sent_requests").increment();
     }
 
@@ -77,7 +77,7 @@ public class FogSensor extends Sensor implements Runnable{
     }
 
     public void generateWarning() {
-        String message = STR."\{SystemData.WARNING} \{SystemData.FOG} 1 \{LocalDateTime.now()}";
+        String message = STR."\{SystemData.WARNING} \{SystemData.FOG} 1 \{LocalDateTime.now()} \{System.currentTimeMillis()}";
         // Sends to proxy
         getSocket().send(message);
         // Sends to aspersor

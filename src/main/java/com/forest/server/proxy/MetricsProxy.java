@@ -16,6 +16,7 @@ public class MetricsProxy {
     public static PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
     public static Timer cloudResponseTime;
     public static Timer qsResponseTime;
+    public static Timer sensorRequestTime;
 
     public static void main(String[] args) {
         try {
@@ -49,8 +50,11 @@ public class MetricsProxy {
         cloudResponseTime = Timer.builder("cloud_response_time")
                 .description("Time taken to get reply from the to the cloud")
                 .register(prometheusRegistry);
-        // For amount of requests received
+        // For sensor system metrics
         prometheusRegistry.counter("received_requests");
+        sensorRequestTime = Timer.builder("proxy_response_time")
+                .description("Time taken to get the push from the sensor")
+                .register(prometheusRegistry);
 
         // Java and system metrics
         new JvmMemoryMetrics().bindTo(prometheusRegistry);
