@@ -1,6 +1,9 @@
 package com.forest.server.sensors;
 
 import com.forest.server.SystemData;
+import com.forest.server.sensors.types.FogSensor;
+import com.forest.server.sensors.types.HumiditySensor;
+import com.forest.server.sensors.types.TemperatureSensor;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

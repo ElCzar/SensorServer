@@ -1,8 +1,5 @@
 package com.forest.server.proxy;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -18,7 +15,7 @@ public class Hearbeat implements Runnable{
                 String message = socket.recvStr();
                 socket.send("Heartbeat");
                 // Increment hearbeat metric counter
-                Metrics.prometheusRegistry.counter("heartbeat").increment();
+                MetricsProxy.prometheusRegistry.counter("heartbeat").increment();
             }
         } catch (Exception e) {
             System.out.println("Error creating socket for hearbeat: " + e.getMessage());

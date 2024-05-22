@@ -1,6 +1,6 @@
-package com.forest.server.sensors;
+package com.forest.server.sensors.types;
 
-import org.zeromq.SocketType;
+import com.forest.server.sensors.AddressListener;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 

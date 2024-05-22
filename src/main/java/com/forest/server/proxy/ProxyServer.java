@@ -1,14 +1,9 @@
 package com.forest.server.proxy;
 
 import com.forest.server.SystemData;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class ProxyServer {
 
@@ -27,7 +22,7 @@ public class ProxyServer {
             while (!Thread.currentThread().isInterrupted()) {
                 byte[] reply = socket.recv(0);
                 // Increment metric counter
-                Metrics.prometheusRegistry.counter("request").increment();
+                MetricsProxy.prometheusRegistry.counter("request").increment();
 
                 String message = new String(reply, ZMQ.CHARSET);
                 System.out.println(STR."Received: [\{message}]");

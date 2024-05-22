@@ -1,4 +1,4 @@
-package com.forest.server.sensors;
+package com.forest.server.sensors.types;
 
 import com.forest.server.SystemData;
 

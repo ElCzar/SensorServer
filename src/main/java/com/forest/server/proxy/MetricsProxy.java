@@ -11,7 +11,7 @@ import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
-public class Metrics {
+public class MetricsProxy {
     public static PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 
     public static void main(String[] args) {
