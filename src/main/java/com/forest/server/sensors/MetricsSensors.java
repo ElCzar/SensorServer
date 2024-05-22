@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class MetricsSensors {
     public static PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
     public static Timer qsResponseTime;
-    private static final int[] SENSOR_COUNTS = {9099, 9098, 9097};
+    private static final int[] SENSOR_COUNTS = {9093, 9094, 9095};
 
     public static void main(String[] args) {
         if (args.length != 2) {
