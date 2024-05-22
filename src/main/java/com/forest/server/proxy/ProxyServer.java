@@ -30,6 +30,19 @@ public class ProxyServer {
                 // Gets message
                 String message = new String(reply, ZMQ.CHARSET);
                 String[] parts = message.split(" ");
+                System.out.println(STR."Received: [\{message}]");
+
+                String solicitudeType = parts[0];
+                double reading = 0;
+                String time = "";
+                long startTime = 0;
+                if (!solicitudeType.equals(SystemData.WARNING)) {
+                    reading = Double.parseDouble(parts[1]);
+                    time = parts[2];
+                    startTime = Long.parseLong(parts[3]);
+                } else {
+                    startTime = Long.parseLong(parts[4]);
+                }
 
                 // Increment metric counter
                 MetricsProxy.prometheusRegistry.counter("received_requests").increment();
@@ -37,17 +50,7 @@ public class ProxyServer {
                 Timer timer = Timer.builder("proxy_response_time")
                         .description("Time taken to get the push from the sensor")
                         .register(MetricsProxy.prometheusRegistry);
-                timer.record(endTime - Long.parseLong(parts[3]), TimeUnit.MILLISECONDS);
-
-                System.out.println(STR."Received: [\{message}]");
-
-                String solicitudeType = parts[0];
-                double reading = 0;
-                String time = "";
-                if (!solicitudeType.equals(SystemData.WARNING)) {
-                    reading = Double.parseDouble(parts[1]);
-                     time = parts[2];
-                }
+                timer.record(endTime - startTime, TimeUnit.MILLISECONDS);
 
                 switch (solicitudeType) {
                     case SystemData.TEMPERATURE:
@@ -70,6 +73,7 @@ public class ProxyServer {
         } catch (Exception e) {
             Thread.currentThread().interrupt();
             System.out.println(STR."Error: \{e.getMessage()}");
+            e.printStackTrace();
         }
     }
 

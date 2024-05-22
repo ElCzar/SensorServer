@@ -80,7 +80,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        com.forest.server.sensors.MetricsSensors
+                                        com.forest.server.QualitySystem
                                     </mainClass>
                                 </manifest>
                             </archive>
