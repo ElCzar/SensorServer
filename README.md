@@ -32,7 +32,8 @@ _java HealthChecker_
 - *Fog*
 <br>
 Junto a estos hace falta especificar un archivo similar a [este](src/main/resources/dataArranged.txt) que contenga los porcentajes de probabilidad para generar los datos de los senores.
-_java SensorServer \[Temperature|Humidity|Fog\] \[Archivo probabilidades\]_
+<br>
+java SensorServer {Temperature|Humidity|Fog} {Archivo probabilidades}
 
 ## Opcional
 Dado que los programas se pueden correr para obtener sus metricas, en caso de requerirlo se puede ejecutar en vez de los servidores sus homologos:
