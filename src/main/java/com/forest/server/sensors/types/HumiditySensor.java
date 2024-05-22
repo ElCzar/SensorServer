@@ -1,6 +1,7 @@
 package com.forest.server.sensors.types;
 
 import com.forest.server.SystemData;
+import com.forest.server.sensors.MetricsSensors;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,5 +45,6 @@ public class HumiditySensor extends Sensor implements Runnable{
     public void messageForProxy(Double data) {
         // Send a message to the proxy
         getSocket().send(STR."\{SystemData.HUMIDITY} \{data} \{LocalDateTime.now()}");
+        MetricsSensors.prometheusRegistry.counter("received_requests").increment();
     }
 }

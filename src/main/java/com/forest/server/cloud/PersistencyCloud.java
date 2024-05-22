@@ -1,10 +1,12 @@
 package com.forest.server.cloud;
 
 import com.forest.server.SystemData;
+import com.forest.server.proxy.MetricsProxy;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import io.micrometer.core.instrument.Timer;
 import org.bson.Document;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -92,9 +94,12 @@ public class PersistencyCloud {
             ZMQ.Socket socket = context.createSocket(SocketType.REQ);
             String qualityControlAddress = "tcp://localhost:5560";
             socket.connect(qualityControlAddress);
-            socket.send(message);
 
+            Timer.Sample sample = Timer.start();
+            socket.send(message);
             byte[] reply = socket.recv();
+            sample.stop(MetricsProxy.qsResponseTime);
+
             System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
             socket.close();
         }

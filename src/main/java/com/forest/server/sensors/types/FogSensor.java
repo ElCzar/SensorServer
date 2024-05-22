@@ -2,6 +2,8 @@ package com.forest.server.sensors.types;
 
 import com.forest.server.SystemData;
 import com.forest.server.sensors.AddressListener;
+import com.forest.server.sensors.MetricsSensors;
+import io.micrometer.core.instrument.Timer;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -67,6 +69,7 @@ public class FogSensor extends Sensor implements Runnable{
     @Override
     public void messageForProxy(Double data) {
        getSocket().send(STR."\{SystemData.FOG} \{data} \{LocalDateTime.now()}");
+       MetricsSensors.prometheusRegistry.counter("received_requests").increment();
     }
 
     private void sprinklerSignal() {
@@ -84,8 +87,10 @@ public class FogSensor extends Sensor implements Runnable{
     }
 
     private void sendQualitySystem(String message) {
+        Timer.Sample sample = Timer.start(MetricsSensors.prometheusRegistry);
         qualitySocket.send(message);
         byte[] reply = qualitySocket.recv();
+        sample.stop(MetricsSensors.qsResponseTime);
         System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
     }
 }

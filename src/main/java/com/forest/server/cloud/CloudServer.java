@@ -1,6 +1,7 @@
 package com.forest.server.cloud;
 
 import com.forest.server.SystemData;
+import com.forest.server.proxy.MetricsProxy;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -20,6 +21,9 @@ public class CloudServer {
 
             while (!Thread.currentThread().isInterrupted()) {
                 byte[] reply = socket.recv(0);
+                // Increment metric counter
+                MetricsProxy.prometheusRegistry.counter("received_requests").increment();
+
                 String message = new String(reply, ZMQ.CHARSET);
                 System.out.println("Received: [" + message + "]");
 

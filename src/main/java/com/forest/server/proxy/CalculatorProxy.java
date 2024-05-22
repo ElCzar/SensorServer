@@ -1,6 +1,7 @@
 package com.forest.server.proxy;
 
 import com.forest.server.SystemData;
+import io.micrometer.core.instrument.Timer;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -98,9 +99,13 @@ public class CalculatorProxy {
             try (ZContext context = new ZContext()) {
                 ZMQ.Socket socket = context.createSocket(SocketType.REQ);
                 socket.connect(cloudAddress);
-                socket.send(message);
 
+                Timer.Sample sample = Timer.start();
+                socket.send(message);
                 byte[] reply = socket.recv(0);
+                sample.stop(MetricsProxy.cloudResponseTime);
+
+
                 System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
                 socket.close();
             }
@@ -113,9 +118,12 @@ public class CalculatorProxy {
             try (ZContext context = new ZContext()) {
                 ZMQ.Socket socket = context.createSocket(SocketType.REQ);
                 socket.connect(qualityControlAddress);
-                socket.send(message);
 
+                Timer.Sample sample = Timer.start();
+                socket.send(message);
                 byte[] reply = socket.recv();
+                sample.stop(MetricsProxy.qsResponseTime);
+
                 System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
                 socket.close();
             }

@@ -22,7 +22,7 @@ public class ProxyServer {
             while (!Thread.currentThread().isInterrupted()) {
                 byte[] reply = socket.recv(0);
                 // Increment metric counter
-                MetricsProxy.prometheusRegistry.counter("request").increment();
+                MetricsProxy.prometheusRegistry.counter("received_requests").increment();
 
                 String message = new String(reply, ZMQ.CHARSET);
                 System.out.println(STR."Received: [\{message}]");

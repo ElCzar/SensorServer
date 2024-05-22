@@ -2,6 +2,7 @@ package com.forest.server.cloud;
 
 import com.forest.server.proxy.ProxyServer;
 import com.sun.net.httpserver.HttpServer;
+import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
@@ -14,6 +15,7 @@ import java.net.InetSocketAddress;
 
 public class MetricsCloud {
     public static PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    public static Timer qsResponseTime;
 
     public static void main(String[] args) {
         try {
@@ -36,8 +38,15 @@ public class MetricsCloud {
     }
 
     private static void registerMetrics() {
-        prometheusRegistry.counter("heartbeat");
-        prometheusRegistry.counter("request");
+        // Custom metrics
+        prometheusRegistry.counter("received_requests");
+        // For quality system metrics
+        prometheusRegistry.counter("layer_to_qs_request");
+        qsResponseTime = Timer.builder("qs_response_time")
+                .description("Time taken to get reply from the to the QS")
+                .register(prometheusRegistry);
+
+        // Java and system metrics
         new JvmMemoryMetrics().bindTo(prometheusRegistry);
         new JvmGcMetrics().bindTo(prometheusRegistry);
         new JvmThreadMetrics().bindTo(prometheusRegistry);
