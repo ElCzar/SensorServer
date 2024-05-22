@@ -99,6 +99,7 @@ public class PersistencyCloud {
             socket.send(message);
             byte[] reply = socket.recv();
             sample.stop(MetricsProxy.qsResponseTime);
+            MetricsCloud.prometheusRegistry.counter("layer_to_qs_request").increment();
 
             System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
             socket.close();

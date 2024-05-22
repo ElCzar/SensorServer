@@ -1,6 +1,7 @@
 package com.forest.server.proxy;
 
 import com.forest.server.SystemData;
+import com.forest.server.sensors.MetricsSensors;
 import io.micrometer.core.instrument.Timer;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -123,6 +124,7 @@ public class CalculatorProxy {
                 socket.send(message);
                 byte[] reply = socket.recv();
                 sample.stop(MetricsProxy.qsResponseTime);
+                MetricsProxy.prometheusRegistry.counter("layer_to_qs_request").increment();
 
                 System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
                 socket.close();

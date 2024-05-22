@@ -91,6 +91,7 @@ public class FogSensor extends Sensor implements Runnable{
         qualitySocket.send(message);
         byte[] reply = qualitySocket.recv();
         sample.stop(MetricsSensors.qsResponseTime);
+        MetricsSensors.prometheusRegistry.counter("layer_to_qs_request").increment();
         System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
     }
 }
