@@ -100,6 +100,7 @@ public class CalculatorProxy {
 
                 byte[] reply = socket.recv(0);
                 System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
+                socket.close();
             }
         });
     }
