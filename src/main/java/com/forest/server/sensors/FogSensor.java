@@ -10,6 +10,7 @@ import java.util.Random;
 
 public class FogSensor extends Sensor implements Runnable{
     private ZMQ.Socket sprinklerSocket;
+    private ZMQ.Socket qualitySocket;
     public FogSensor(Double probabilityCorrect, Double probabilityOutOfRange, Double probabilityError) {
         super(probabilityCorrect, probabilityOutOfRange, probabilityError);
         this.SENSOR_COUNT = 3000;
@@ -20,6 +21,9 @@ public class FogSensor extends Sensor implements Runnable{
         try(ZContext context = new ZContext(1)) {
             sprinklerSocket = context.createSocket(SocketType.PUSH);
             sprinklerSocket.connect("tcp://localhost:5590");
+
+            qualitySocket = context.createSocket(SocketType.REQ);
+            qualitySocket.connect("tcp://localhost:5560");
 
             addressListener = new AddressListener();
             Thread listenerThread = new Thread(addressListener);
@@ -69,10 +73,18 @@ public class FogSensor extends Sensor implements Runnable{
     }
 
     public void generateWarning() {
-        getSocket().send(STR."\{SystemData.WARNING} \{SystemData.FOG} 1 \{LocalDateTime.now()}");
-        sprinklerSignal();
-        // TODO send warning to quality control system and signal to aspersor
         String message = STR."\{SystemData.WARNING} \{SystemData.FOG} 1 \{LocalDateTime.now()}";
-        // warningQualitySystem(message);
+        // Sends to proxy
+        getSocket().send(message);
+        // Sends to aspersor
+        sprinklerSignal();
+        // Sends to quality system
+        sendQualitySystem(message);
+    }
+
+    private void sendQualitySystem(String message) {
+        qualitySocket.send(message);
+        byte[] reply = qualitySocket.recv();
+        System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
     }
 }

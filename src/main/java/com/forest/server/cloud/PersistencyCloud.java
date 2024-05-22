@@ -6,6 +6,9 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.zeromq.SocketType;
+import org.zeromq.ZContext;
+import org.zeromq.ZMQ;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,6 +57,7 @@ public class PersistencyCloud {
                     break;
                 case SystemData.WARNING:
                     saveWarningData(sensorType, value, time);
+                    sendWarningToQualityControl(information);
                     break;
                 default:
                     System.out.println("Invalid info type");
@@ -84,7 +88,15 @@ public class PersistencyCloud {
     }
 
     private void sendWarningToQualityControl(String message) {
-        // TODO Implementa este método para enviar una alerta al quality control system - REQUEST-REPLY
-        System.out.println(STR."Sending message to cloud: \{message}");
+        try (ZContext context = new ZContext()) {
+            ZMQ.Socket socket = context.createSocket(SocketType.REQ);
+            String qualityControlAddress = "tcp://localhost:5560";
+            socket.connect(qualityControlAddress);
+            socket.send(message);
+
+            byte[] reply = socket.recv();
+            System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
+            socket.close();
+        }
     }
 }

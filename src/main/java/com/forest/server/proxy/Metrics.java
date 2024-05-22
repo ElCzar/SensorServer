@@ -17,7 +17,7 @@ public class Metrics {
     public static void main(String[] args) {
         try {
             registerMetrics();
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(9091), 0);
             server.createContext("/metrics", httpExchange -> {
                 String response = prometheusRegistry.scrape();
                 httpExchange.sendResponseHeaders(200, response.getBytes().length);

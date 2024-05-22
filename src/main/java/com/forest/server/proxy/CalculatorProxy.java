@@ -14,6 +14,8 @@ import java.util.concurrent.Executors;
 public class CalculatorProxy {
     private final ExecutorService executorService;
     private final String cloudAddress = "tcp://localhost:5556";
+    private final String qualityControlAddress = "tcp://localhost:5560";
+
     private static final ArrayList<Double> temperatureReadings = new ArrayList<>();
     private static boolean temperatureAverage = false;
     private static boolean humidityAverage = false;
@@ -106,9 +108,17 @@ public class CalculatorProxy {
     }
 
     private void sendWarningToQualityControl(String message) {
-        // TODO Implementa este método para enviar una alerta al sistema de control de calidad - REQUEST-REPLY
         executorService.submit(() -> {
-            System.out.println(STR."Sending warning to quality control: \{message}");
+            // Create a connection of request to the cloud
+            try (ZContext context = new ZContext()) {
+                ZMQ.Socket socket = context.createSocket(SocketType.REQ);
+                socket.connect(qualityControlAddress);
+                socket.send(message);
+
+                byte[] reply = socket.recv();
+                System.out.println(STR."Success: [\{new String(reply, ZMQ.CHARSET)}]");
+                socket.close();
+            }
         });
     }
 }
