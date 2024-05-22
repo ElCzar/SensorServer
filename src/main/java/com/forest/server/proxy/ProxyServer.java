@@ -16,6 +16,10 @@ public class ProxyServer {
             socket.bind("tcp://*:5555");
             CalculatorProxy calculatorProxy = new CalculatorProxy();
 
+            // Creates hearbeat
+            Hearbeat hearbeat = new Hearbeat();
+            Thread hearbeatThread = new Thread(hearbeat);
+            hearbeatThread.start();
             System.out.println("Listening...");
 
             while (!Thread.currentThread().isInterrupted()) {

@@ -10,7 +10,6 @@ public abstract class Sensor implements Runnable{
     protected Double probabilityOutOfRange;
     protected Double probabilityError;
     protected AddressListener addressListener;
-    protected static final String address = "tcp://localhost:5555";
 
 
     public Sensor(Double probabilityCorrect, Double probabilityOutOfRange, Double probabilityError) {
@@ -23,7 +22,8 @@ public abstract class Sensor implements Runnable{
     public void run() {
         try(ZContext context = new ZContext(1)) {
             addressListener = new AddressListener();
-            addressListener.run();
+            Thread listenerThread = new Thread(addressListener);
+            listenerThread.start();
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Thread.sleep(SENSOR_COUNT);

@@ -82,4 +82,9 @@ public class PersistencyCloud {
                 .append("time", time);
         warningsCollection.insertOne(document);
     }
+
+    private void sendWarningToQualityControl(String message) {
+        // TODO Implementa este método para enviar una alerta al quality control system - REQUEST-REPLY
+        System.out.println(STR."Sending message to cloud: \{message}");
+    }
 }

@@ -33,13 +33,7 @@ public class CalculatorCloud implements Runnable{
             if (promedio < HUMIDITY_LIMIT) {
                 String message = STR."\{SystemData.WARNING} \{SystemData.HUMIDITY} \{promedio} \{LocalDate.now()}";
                 CloudServer.persistencyCloud.clasifyAndSaveData(message);
-                sendWarningToQualityControl(message);
             }
         }
-    }
-
-    private void sendWarningToQualityControl(String message) {
-        // TODO Implementa este método para enviar una alerta al sistema de control de calidad - REQUEST-REPLY
-        System.out.println(STR."Sending warning to quality control: \{message}");
     }
 }
