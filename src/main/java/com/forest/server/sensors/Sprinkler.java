@@ -12,7 +12,7 @@ public class Sprinkler implements Runnable{
         // Create a socket to receive messages from the Fog Sensor
         try (ZContext context = new ZContext(1)) {
             ZMQ.Socket socket = context.createSocket(SocketType.PULL);
-            socket.connect("tcp://localhost:5590");
+            socket.bind("tcp://*:5590");
 
             while (!Thread.currentThread().isInterrupted()) {
                 try {

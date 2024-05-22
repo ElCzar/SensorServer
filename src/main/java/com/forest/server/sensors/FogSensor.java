@@ -18,12 +18,12 @@ public class FogSensor extends Sensor implements Runnable{
     @Override
     public void run() {
         try(ZContext context = new ZContext(1)) {
-            Sprinkler sprinkler = new Sprinkler();
-            Thread sprinklerThread = new Thread(sprinkler);
-            sprinklerThread.start();
-
             sprinklerSocket = context.createSocket(SocketType.PUSH);
-            sprinklerSocket.bind("tcp://*:5590");
+            sprinklerSocket.connect("tcp://localhost:5590");
+
+            addressListener = new AddressListener();
+            Thread listenerThread = new Thread(addressListener);
+            listenerThread.start();
 
             while (!Thread.currentThread().isInterrupted()) {
                 try {
@@ -69,10 +69,8 @@ public class FogSensor extends Sensor implements Runnable{
     }
 
     public void generateWarning() {
-        System.out.println(STR."Warning: Fog detected!");
-        messageForProxy(1.0);
+        getSocket().send(STR."\{SystemData.WARNING} \{SystemData.FOG} 1 \{LocalDateTime.now()}");
         sprinklerSignal();
-
         // TODO send warning to quality control system and signal to aspersor
         String message = STR."\{SystemData.WARNING} \{SystemData.FOG} 1 \{LocalDateTime.now()}";
         // warningQualitySystem(message);

@@ -28,11 +28,15 @@ public class ProxyServer {
                 System.out.println(STR."Received: [\{message}]");
 
                 String[] parts = message.split(" ");
-                String sensorType = parts[0];
-                double reading = Double.parseDouble(parts[1]);
-                String time = parts[2];
+                String solicitudeType = parts[0];
+                double reading = 0;
+                String time = "";
+                if (!solicitudeType.equals(SystemData.WARNING)) {
+                    reading = Double.parseDouble(parts[1]);
+                     time = parts[2];
+                }
 
-                switch (sensorType) {
+                switch (solicitudeType) {
                     case SystemData.TEMPERATURE:
                         calculatorProxy.receiveTemperature(reading, time);
                         break;
@@ -46,7 +50,7 @@ public class ProxyServer {
                         calculatorProxy.warningDetected(message);
                         break;
                     default:
-                        System.out.println(STR."Unknown information type: \{sensorType}");
+                        System.out.println(STR."Unknown information type: \{solicitudeType}");
                         break;
                 }
             }

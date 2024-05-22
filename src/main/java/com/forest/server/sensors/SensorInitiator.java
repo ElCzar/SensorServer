@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SensorInitiator {
     public static final int SENSOR_COUNT = 10;
@@ -15,6 +16,12 @@ public class SensorInitiator {
             Double probabilityCorrect = data.get(0);
             Double probabilityOutOfRange = data.get(1);
             Double probabilityError = data.get(2);
+
+            if (Objects.equals(type, SystemData.FOG)) {
+                Sprinkler sprinkler = new Sprinkler();
+                Thread sprinklerThread = new Thread(sprinkler);
+                sprinklerThread.start();
+            }
 
 
             for (int i = 0; i < SENSOR_COUNT; i++) {
