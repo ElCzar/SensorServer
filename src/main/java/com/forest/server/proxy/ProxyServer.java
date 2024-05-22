@@ -26,16 +26,17 @@ public class ProxyServer {
                 String[] parts = message.split(" ");
                 String sensorType = parts[0];
                 double reading = Double.parseDouble(parts[1]);
+                String time = parts[2];
 
                 switch (sensorType) {
                     case SystemData.TEMPERATURE:
-                        calculatorProxy.receiveTemperature(reading);
+                        calculatorProxy.receiveTemperature(reading, time);
                         break;
                     case SystemData.HUMIDITY:
-                        calculatorProxy.receiveHumidity(reading);
+                        calculatorProxy.receiveHumidity(reading, time);
                         break;
                     case SystemData.FOG:
-                        calculatorProxy.receiveFog(reading);
+                        calculatorProxy.receiveFog(reading, time);
                         break;
                     case SystemData.WARNING:
                         calculatorProxy.warningDetected(message);

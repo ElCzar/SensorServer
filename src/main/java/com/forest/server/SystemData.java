@@ -8,4 +8,5 @@ public class SystemData {
     public static final String WARNING = "Warning";
     public static final String MEASUREMENT = "Measurement";
     public static final String AVERAGE = "Average";
+    public static final String MENSUAL = "Mensual";
 }

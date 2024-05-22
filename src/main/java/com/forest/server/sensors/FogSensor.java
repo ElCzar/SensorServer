@@ -4,6 +4,7 @@ import com.forest.server.SystemData;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 
 public class FogSensor extends Sensor implements Runnable{
@@ -54,7 +55,7 @@ public class FogSensor extends Sensor implements Runnable{
 
     @Override
     public void messageForProxy(Double data) {
-       socket.send(STR."\{SystemData.FOG} \{data}");
+       socket.send(STR."\{SystemData.FOG} \{data} \{LocalDateTime.now()}");
     }
 
     public void generateWarning() {
