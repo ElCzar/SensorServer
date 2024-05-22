@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
+import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 
@@ -15,14 +16,7 @@ public class Metrics {
 
     public static void main(String[] args) {
         try {
-            // Creates 2 metrics, for heartbeat and for amount of request
-            prometheusRegistry.counter("heartbeat");
-            prometheusRegistry.counter("request");
-            // Creates the metrics from the jvm
-            new JvmMemoryMetrics().bindTo(prometheusRegistry);
-            new JvmGcMetrics().bindTo(prometheusRegistry);
-            new JvmThreadMetrics().bindTo(prometheusRegistry);
-
+            registerMetrics();
             HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
             server.createContext("/metrics", httpExchange -> {
                 String response = prometheusRegistry.scrape();
@@ -38,5 +32,14 @@ public class Metrics {
             System.out.println("Error creating socket for metrics: " + e.getMessage());
             System.exit(1);
         }
+    }
+
+    private static void registerMetrics() {
+        prometheusRegistry.counter("heartbeat");
+        prometheusRegistry.counter("request");
+        new JvmMemoryMetrics().bindTo(prometheusRegistry);
+        new JvmGcMetrics().bindTo(prometheusRegistry);
+        new JvmThreadMetrics().bindTo(prometheusRegistry);
+        new ProcessorMetrics().bindTo(prometheusRegistry);
     }
 }
