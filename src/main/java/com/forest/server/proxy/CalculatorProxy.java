@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 public class CalculatorProxy {
     private final ExecutorService executorService;
-    private final String cloudAddress = "tcp://localhost:5556";
+    private final String cloudAddress = "tcp://10.43.101.8:5556";
     private final String qualityControlAddress = "tcp://localhost:5560";
 
     private static final ArrayList<Double> temperatureReadings = new ArrayList<>();

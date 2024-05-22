@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class HealthChecker {
-    private static final String originalAddress = "tcp://localhost:5540";
+    private static final String originalAddress = "tcp://10.43.100.44:5540";
+    private static final String backupAddress = "tcp://10.43.101.8:5555";
 
     public static void main(String[] args) {
         try (ZContext context = new ZContext()) {
@@ -35,7 +36,7 @@ public class HealthChecker {
                     Thread.sleep(250);
                 } else {
                     System.out.println("Proxy is not responding...");
-                    socket.send("tcp://10.43.100.44:5555");
+                    socket.send(backupAddress);
                     ProxyServer.main(new String[]{});
                 }
             }

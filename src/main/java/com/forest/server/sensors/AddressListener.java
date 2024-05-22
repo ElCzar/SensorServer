@@ -5,8 +5,8 @@ import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 public class AddressListener implements Runnable {
-    private static final String healthCheckAddress = "tcp://10.43.100.44:5824";
-    private static final String originalAddress = "tcp://localhost:5555";
+    private static final String healthCheckAddress = "tcp://10.43.101.8:5824";
+    private static final String originalAddress = "tcp://10.43.100.44:5555";
     private ZMQ.Socket socketHealthCheck;
     private ZMQ.Socket socket;
     private ZContext context;
