@@ -35,6 +35,7 @@ public class HealthChecker {
                 } else {
                     System.out.println("Proxy is not responding...");
                     socket.send("tcp://10.43.100.44:5555");
+                    ProxyServer.main(new String[]{});
                 }
             }
 
