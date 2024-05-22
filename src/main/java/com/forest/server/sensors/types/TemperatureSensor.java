@@ -51,6 +51,6 @@ public class TemperatureSensor extends Sensor implements Runnable{
     public void messageForProxy(Double data) {
         // Send a message to the proxy
         getSocket().send(STR."\{SystemData.TEMPERATURE} \{data} \{LocalDateTime.now()}");
-        MetricsSensors.prometheusRegistry.counter("received_requests").increment();
+        MetricsSensors.prometheusRegistry.counter("sent_requests").increment();
     }
 }

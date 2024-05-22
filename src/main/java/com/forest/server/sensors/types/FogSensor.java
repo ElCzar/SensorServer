@@ -69,7 +69,7 @@ public class FogSensor extends Sensor implements Runnable{
     @Override
     public void messageForProxy(Double data) {
        getSocket().send(STR."\{SystemData.FOG} \{data} \{LocalDateTime.now()}");
-       MetricsSensors.prometheusRegistry.counter("received_requests").increment();
+       MetricsSensors.prometheusRegistry.counter("sent_requests").increment();
     }
 
     private void sprinklerSignal() {

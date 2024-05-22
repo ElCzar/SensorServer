@@ -80,7 +80,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        com.forest.server.proxy.ProxyServer
+                                        com.forest.server.sensors.MetricsSensors
                                     </mainClass>
                                 </manifest>
                             </archive>
