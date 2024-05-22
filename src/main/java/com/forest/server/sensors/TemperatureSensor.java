@@ -49,6 +49,6 @@ public class TemperatureSensor extends Sensor implements Runnable{
     @Override
     public void messageForProxy(Double data) {
         // Send a message to the proxy
-        socket.send(STR."\{SystemData.TEMPERATURE} \{data} \{LocalDateTime.now()}");
+        getSocket().send(STR."\{SystemData.TEMPERATURE} \{data} \{LocalDateTime.now()}");
     }
 }

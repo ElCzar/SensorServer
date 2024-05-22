@@ -9,7 +9,7 @@ public abstract class Sensor implements Runnable{
     protected Double probabilityCorrect;
     protected Double probabilityOutOfRange;
     protected Double probabilityError;
-    protected ZMQ.Socket socket;
+    protected AddressListener addressListener;
     protected static final String address = "tcp://localhost:5555";
 
 
@@ -22,9 +22,8 @@ public abstract class Sensor implements Runnable{
     @Override
     public void run() {
         try(ZContext context = new ZContext(1)) {
-            socket = context.createSocket(SocketType.PUSH);
-            socket.connect(address);
-
+            addressListener = new AddressListener();
+            addressListener.run();
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Thread.sleep(SENSOR_COUNT);
@@ -71,10 +70,6 @@ public abstract class Sensor implements Runnable{
     }
 
     public ZMQ.Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(ZMQ.Socket socket) {
-        this.socket = socket;
+        return addressListener.getSocket();
     }
 }

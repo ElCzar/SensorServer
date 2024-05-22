@@ -16,9 +16,6 @@ public class FogSensor extends Sensor implements Runnable{
     @Override
     public void run() {
         try(ZContext context = new ZContext(1)) {
-            socket = context.createSocket(SocketType.PUSH);
-            socket.connect(address);
-
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Thread.sleep(SENSOR_COUNT);
@@ -55,7 +52,7 @@ public class FogSensor extends Sensor implements Runnable{
 
     @Override
     public void messageForProxy(Double data) {
-       socket.send(STR."\{SystemData.FOG} \{data} \{LocalDateTime.now()}");
+       getSocket().send(STR."\{SystemData.FOG} \{data} \{LocalDateTime.now()}");
     }
 
     public void generateWarning() {
